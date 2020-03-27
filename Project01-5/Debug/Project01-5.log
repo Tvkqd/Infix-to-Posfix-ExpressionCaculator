@@ -1,0 +1,5 @@
+﻿  Main.cpp
+c:\users\tuyen\desktop\sp20\cs303\project01-5\project01-5\main.cpp(11): warning C4018: '<': signed/unsigned mismatch
+c:\users\tuyen\desktop\sp20\cs303\project01-5\project01-5\main.cpp(48): warning C4018: '<': signed/unsigned mismatch
+c:\users\tuyen\desktop\sp20\cs303\project01-5\project01-5\main.cpp(58): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  Project01-5.vcxproj -> C:\Users\tuyen\Desktop\SP20\CS303\Project01-5\Debug\Project01-5.exe
