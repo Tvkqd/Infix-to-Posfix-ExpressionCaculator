@@ -6,35 +6,52 @@ using namespace std;
 //Convert infix into posfix
 string infix_to_posfix(string input) {
 	stack<char> pos;
-	string temp;
+	//Prevent the error for .top() empty stack
+	pos.push('e');
+	string temp = "";
+	temp += input[0];
 
-	for (int i = 0; i < input.length(); i++) {
+	for (int i = 1; i < input.length(); i++) {
 		//Add digits to a the string
 		if (isdigit(input[i])) {
+			//Handle digits greater then 9
+			if (isdigit(input[i - 1])) {
+				temp += input[i];
+				continue;
+			}
+			temp += " ";
 			temp += input[i];
 			//Pop * and / first
 			if (pos.top() == '*' || pos.top() == '/') {
+				temp += " ";
 				temp += pos.top();
 				pos.pop();
 			}
 		}
+		//Pop all operators inside the ()
 		else if (input[i] == ')') {
-			while (pos.top() != '(') {
+			while (pos.top() != 'e') {
+				if (pos.top() == '(') {
+					//Pop the character (
+					pos.pop();
+					continue;
+				}
+				temp += " ";
 				temp += pos.top();
 				pos.pop();
 			}
-			//Pop the character (
-			pos.pop();
 		}
 		else
 			pos.push(input[i]);
+		
 	}
 	//Pop the remaining operators
-	while (pos.top()) {
+	while (pos.top() != 'e') {
+		temp += " ";
 		temp += pos.top();
 		pos.pop();
 	}
-
+	
 	return temp;
 }
 
@@ -44,7 +61,7 @@ double pos_calculator(string str) {
 	int num;
 	string temp = "";
 	stack<double> st;
-
+	
 	for (int i = 0; i < str.size(); i++) {
 		//Read digits into a stack
 		if (isdigit(str[i]))
@@ -87,13 +104,12 @@ int main() {
 	char play = 'y';
 
 	while (play == 'y') {
-		cout << "Enter the infix arithmetic expression (no spaces)" << endl;
-		cin.ignore();
+		cout << "Enter the infix arithmetic expression (no spaces): ";
 		getline(cin, input);
 
 		//Convert infix to posfix
 		input = infix_to_posfix(input);
-		cout << input << endl;
+		cout << "Postfix form: " << input << endl;
 		//Calculate 
 		result = pos_calculator(input);
 		cout << "Result: " << result << endl;
@@ -102,6 +118,7 @@ int main() {
 		cout << "Do you want to calculate another one?(y/n) ";
 		cin >> play;
 		cout << endl;
+		cin.ignore();
 	}
 
 	system("pause");
