@@ -3,6 +3,13 @@
 #include<stack>
 using namespace std;
 
+//Pop operator from the stack, add it to the posfix string
+void pop_operator(stack<char>& oper, string& tp) {
+	tp += " ";
+	tp += oper.top();
+	oper.pop();
+}
+
 //Convert infix into posfix
 string infix_to_posfix(string input) {
 	stack<char> pos;
@@ -10,6 +17,7 @@ string infix_to_posfix(string input) {
 	pos.push('e');
 	string temp = "";
 	temp += input[0];
+	int changeCheck = 0;
 
 	for (int i = 1; i < input.length(); i++) {
 		//Add digits to a the string
@@ -23,10 +31,11 @@ string infix_to_posfix(string input) {
 			temp += input[i];
 			//Pop * and / first
 			if (pos.top() == '*' || pos.top() == '/') {
-				temp += " ";
-				temp += pos.top();
-				pos.pop();
+				pop_operator(pos, temp);
+				if (pos.top() == '-')
+					changeCheck--;
 			}
+
 		}
 		//Pop all operators inside the ()
 		else if (input[i] == ')') {
@@ -36,21 +45,31 @@ string infix_to_posfix(string input) {
 					pos.pop();
 					continue;
 				}
-				temp += " ";
-				temp += pos.top();
-				pos.pop();
+				pop_operator(pos, temp);
 			}
 		}
-		else
+		else {
+			//Do not change if there is ()
+			if (pos.top() == '(')
+				changeCheck = 0;
+			//Change (+ to -) or (- to +) if there is - in front of it
+			else if (pos.top() == '-') 
+				changeCheck++;
+			if (changeCheck%2 != 0){
+				if (input[i] == '+') {
+					input[i] = '-';
+				}
+				else if (input[i] == '-') {
+					input[i] = '+';
+				}
+			}
 			pos.push(input[i]);
+		}
 		
 	}
 	//Pop the remaining operators
-	while (pos.top() != 'e') {
-		temp += " ";
-		temp += pos.top();
-		pos.pop();
-	}
+	while (pos.top() != 'e') 
+		pop_operator(pos, temp);
 	
 	return temp;
 }
