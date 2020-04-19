@@ -39,22 +39,26 @@ string infix_to_posfix(string input) {
 		}
 		//Pop all operators inside the ()
 		else if (input[i] == ')') {
-			while (pos.top() != 'e') {
-				if (pos.top() == '(') {
-					//Pop the character (
-					pos.pop();
-					continue;
-				}
+			while (pos.top() != '(') 
 				pop_operator(pos, temp);
-			}
+			//Pop the character (
+			pos.pop();
+			//Check for * and / 
+			if (pos.top() == '*' || pos.top() == '/')
+				pop_operator(pos, temp);
 		}
 		else {
+			int before_change;
 			//Do not change if there is ()
-			if (pos.top() == '(')
+			if (pos.top() == '(') {
+				before_change = changeCheck;
 				changeCheck = 0;
-			//Change (+ to -) or (- to +) if there is - in front of it
+			}
+			else if (pos.top() == ')')
+				changeCheck = before_change;
 			else if (pos.top() == '-') 
 				changeCheck++;
+			//Change (+ to -) or (- to +) if there is - in front of it
 			if (changeCheck%2 != 0){
 				if (input[i] == '+') {
 					input[i] = '-';
@@ -128,7 +132,7 @@ int main() {
 
 		//Convert infix to posfix
 		input = infix_to_posfix(input);
-		cout << "Postfix form: " << input << endl;
+		//cout << "Postfix form: " << input << endl;
 		//Calculate 
 		result = pos_calculator(input);
 		cout << "Result: " << result << endl;
